@@ -103,6 +103,12 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
+extern int sys_setPriority(void);           // (Added)
+extern int sys_getPriority(void);           // (Added)
+extern int sys_changePolicy(void);          // (Added)
+extern int sys_getPolicy(void);             // (Added)
+extern int sys_wait2(void);                 // (Added)
+extern int sys_fork2(void);                 // (Added)
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -112,7 +118,7 @@ static int (*syscalls[])(void) = {
 [SYS_read]    sys_read,
 [SYS_kill]    sys_kill,
 [SYS_exec]    sys_exec,
-[SYS_fstat]   sys_fstat,
+[SYS_fstat]   sys_fstat,      
 [SYS_chdir]   sys_chdir,
 [SYS_dup]     sys_dup,
 [SYS_getpid]  sys_getpid,
@@ -126,6 +132,12 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_setPriority]     sys_setPriority,            // (Added)
+[SYS_getPriority]     sys_getPriority,            // (Added)
+[SYS_changePolicy]    sys_changePolicy,           // (Added)
+[SYS_getPolicy]       sys_getPolicy,              // (Added) 
+[SYS_wait2]           sys_wait2,                  // (Added)
+[SYS_fork2]         sys_fork2,                    // (Added)
 };
 
 void
@@ -136,6 +148,7 @@ syscall(void)
 
   num = curproc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
+    curproc->syscall_occurrence[num-1]++;  // (Added)
     curproc->tf->eax = syscalls[num]();
   } else {
     cprintf("%d %s: unknown sys call %d\n",
