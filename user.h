@@ -23,6 +23,12 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int setPriority(int priority);           // (Added)
+int getPriority(void);                   // (Added)
+int changePolicy(int policy);            // (Added)
+int getPolicy(void);                     // (Added)
+int wait2(Times *times);                 // (Added)
+int fork2(int queue);                    // (Added)
 
 // ulib.c
 int stat(const char*, struct stat*);
